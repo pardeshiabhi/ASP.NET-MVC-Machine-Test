@@ -47,7 +47,6 @@ namespace ProductDetail.API.Controllers
                 return View(category); 
             }
 
-            // Add the product to the database
             _context.Categories.Add(category);
             await _context.SaveChangesAsync();
             TempData["SuccessMessage"] = "Category added successfully!";

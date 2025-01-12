@@ -44,22 +44,18 @@ namespace ProductDetail.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(Product product)
         {
-            // Validate if the category ID exists
             if (!_context.Categories.Any(c => c.CategoryId == product.CategoryId))
             {
                 return BadRequest("Category does not exist.");
             }
 
-            // Check if the product already exists
             if (_context.Products.Any(p => p.ProductName == product.ProductName))
             {
                 ModelState.AddModelError("ProductName", "Product already exists.");
-                // Reload categories for the view
                 ViewBag.Categories = await _context.Categories.ToListAsync();
-                return View(product); // Return the view with validation errors
+                return View(product); 
             }
 
-            // Add the product to the database
             _context.Products.Add(product);
             await _context.SaveChangesAsync();
             TempData["SuccessMessage"] = "Product added successfully!";
@@ -86,7 +82,6 @@ namespace ProductDetail.API.Controllers
         {
             if (id != product.ProductId) return NotFound();
 
-            // Validate if another product's category name conflicts
             if (_context.Categories.Any(c => c.CategoryName == product.Category.CategoryName && c.CategoryId != product.CategoryId))
             {
                 return BadRequest("Category with this name already exists.");
