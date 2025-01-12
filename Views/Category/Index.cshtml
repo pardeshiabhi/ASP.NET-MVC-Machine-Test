@@ -1,0 +1,63 @@
+﻿@model IEnumerable<ProductDetail.API.Models.Category>
+
+@{
+    ViewData["Title"] = "Category List";
+    var currentPage = ViewData["CurrentPage"] as int? ?? 1;
+    var totalPages = ViewData["TotalPages"] as int? ?? 1;
+}
+
+<h2>Category List</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div id="successMessage" class="alert alert-success slide-in" role="alert">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>CategoryId</th>
+            <th>CategoryName</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var category in Model)
+        {
+            <tr>
+                <td>@category.CategoryId</td>
+                <td>@category.CategoryName</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@category.CategoryId" class="btn btn-warning">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@category.CategoryId" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="container mt-3">
+    <div class="row justify-content-end">
+        <div class="col-auto">
+            @if (currentPage > 1)
+            {
+                <a asp-action="Index" asp-route-pageNo="@(currentPage - 1)" class="btn btn-secondary">Previous</a>
+            }
+        </div>
+
+        <div class="col-auto">
+            <span class="pagination-text">Page @currentPage of @totalPages</span>
+        </div>
+
+        <div class="col-auto">
+            @if (currentPage < totalPages)
+            {
+                <a asp-action="Index" asp-route-pageNo="@(currentPage + 1)" class="btn btn-secondary">Next</a>
+            }
+        </div>
+    </div>
+</div>
+
+<a asp-action="Create" class="btn btn-primary mt-3">Add Category</a>

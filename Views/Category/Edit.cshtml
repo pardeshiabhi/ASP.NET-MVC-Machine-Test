@@ -1,0 +1,18 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+@model ProductDetail.API.Models.Category
+
+<h2>Edit Category</h2>
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="CategoryId" />
+    <div class="form-group">
+        <label for="CategoryName">Category Name</label>
+        <input type="text" asp-for="CategoryName" class="form-control" required />
+        <span asp-validation-for="CategoryName" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-warning">Save Changes</button>
+</form>

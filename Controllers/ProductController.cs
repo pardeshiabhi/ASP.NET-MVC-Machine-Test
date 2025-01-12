@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using ProductDetail.API.Data;
 using ProductDetail.API.Models;
+using System.Linq;
 
 namespace ProductDetail.API.Controllers
 {
@@ -39,29 +40,33 @@ namespace ProductDetail.API.Controllers
             return View();
         }
 
-        //[HttpPost]
-        //public async Task<IActionResult> Create(Product product)
-        //{
-        //        _context.Products.Add(product);
-        //        await _context.SaveChangesAsync();
-        //        TempData["SuccessMessage"] = "Product added successfully!";
-        //        return RedirectToAction(nameof(Index));
-
-        //    ViewBag.Categories = await _context.Categories.ToListAsync();
-        //    return View(product);
-        //}
 
         [HttpPost]
         public async Task<IActionResult> Create(Product product)
         {
-                _context.Products.Add(product);
-                await _context.SaveChangesAsync();
-                TempData["SuccessMessage"] = "Product added successfully!";
-                return RedirectToAction(nameof(Index));
-          
-            ViewBag.Categories = await _context.Categories.ToListAsync();
-            return View(product);
+            // Validate if the category ID exists
+            if (!_context.Categories.Any(c => c.CategoryId == product.CategoryId))
+            {
+                return BadRequest("Category does not exist.");
+            }
+
+            // Check if the product already exists
+            if (_context.Products.Any(p => p.ProductName == product.ProductName))
+            {
+                ModelState.AddModelError("ProductName", "Product already exists.");
+                // Reload categories for the view
+                ViewBag.Categories = await _context.Categories.ToListAsync();
+                return View(product); // Return the view with validation errors
+            }
+
+            // Add the product to the database
+            _context.Products.Add(product);
+            await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = "Product added successfully!";
+            return RedirectToAction(nameof(Index));
         }
+
+
 
 
 
@@ -80,22 +85,28 @@ namespace ProductDetail.API.Controllers
         public async Task<IActionResult> Edit(int id, Product product)
         {
             if (id != product.ProductId) return NotFound();
-                try
-                {
-                    _context.Products.Update(product);
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ProductExists(product.ProductId)) return NotFound();
-                    throw;
-                }
+
+            // Validate if another product's category name conflicts
+            if (_context.Categories.Any(c => c.CategoryName == product.Category.CategoryName && c.CategoryId != product.CategoryId))
+            {
+                return BadRequest("Category with this name already exists.");
+            }
+
+            try
+            {
+                _context.Products.Update(product);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ProductExists(product.ProductId)) return NotFound();
+                throw;
+            }
 
             ViewBag.Categories = await _context.Categories.ToListAsync();
             return View(product);
         }
-
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();

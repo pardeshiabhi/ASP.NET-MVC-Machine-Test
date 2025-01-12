@@ -142,3 +142,4 @@ C:\Users\parde\OneDrive\Desktop\practice\ProductDetail.API\obj\Debug\net8.0\refi
 C:\Users\parde\OneDrive\Desktop\practice\ProductDetail.API\obj\Debug\net8.0\ProductDetail.API.pdb
 C:\Users\parde\OneDrive\Desktop\practice\ProductDetail.API\obj\Debug\net8.0\ProductDetail.API.genruntimeconfig.cache
 C:\Users\parde\OneDrive\Desktop\practice\ProductDetail.API\obj\Debug\net8.0\ref\ProductDetail.API.dll
+C:\Users\parde\OneDrive\Desktop\practice\ProductDetail.API\obj\Debug\net8.0\ProductDetail.API.sourcelink.json
